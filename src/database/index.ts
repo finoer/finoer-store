@@ -112,6 +112,8 @@ class Database {
   proxyOfprototype(data: DataType, namespace: string, key: string) {
     if(key === '_spacename') { return }
 
+    console.log(data)
+
     const _namespace = namespace || this.namespace;
 
     const sharePropertyDefinition = {

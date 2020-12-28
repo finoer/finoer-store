@@ -103,6 +103,7 @@ class Database {
         if (key === '_spacename') {
             return;
         }
+        console.log(data);
         const _namespace = namespace || this.namespace;
         const sharePropertyDefinition = {
             get: () => {
@@ -145,7 +146,7 @@ class Database {
     }
 }
 
-console.log('databnase改变了');
+console.log('databnase改变了最终版444');
 
 export default Database;
 //# sourceMappingURL=fino-database.es.js.map

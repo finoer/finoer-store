@@ -109,6 +109,7 @@
           if (key === '_spacename') {
               return;
           }
+          console.log(data);
           const _namespace = namespace || this.namespace;
           const sharePropertyDefinition = {
               get: () => {
@@ -151,7 +152,7 @@
       }
   }
 
-  console.log('databnase改变了');
+  console.log('databnase改变了最终版444');
 
   return Database;
 

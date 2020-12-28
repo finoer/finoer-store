@@ -16,7 +16,7 @@
   "main": "dist/src/index.js",
   "module": "dist/fino-database.es.js",
   "cjsmodule": "dist/fino-database.cjs.js",
-  "typings": "dist/src/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist",
     "src"
