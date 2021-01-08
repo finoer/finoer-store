@@ -43,7 +43,7 @@ class Database {
       return
     }
 
-    if(isObject(data)) {
+    if(!isObject(data)) {
       console.error(`设置的数据必须是一个对象`);
       return
     }
@@ -63,7 +63,7 @@ class Database {
     }
 
     // 代理内容
-    this.data[currentSpace] = this.proxyOfcontent
+    this.data[currentSpace] = this.proxyOfcontent(currentSpace)
   }
 
   /**

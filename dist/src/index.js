@@ -47,7 +47,7 @@
               console.error(`${namespace}是数据仓库的关键字，请更改命名空间`);
               return;
           }
-          if (isObject(data)) {
+          if (!isObject(data)) {
               console.error(`设置的数据必须是一个对象`);
               return;
           }
@@ -62,7 +62,7 @@
               this.proxyOfprototype(data, currentSpace, key);
           }
           // 代理内容
-          this.data[currentSpace] = this.proxyOfcontent;
+          this.data[currentSpace] = this.proxyOfcontent(currentSpace);
       }
       /**
        * Get the data of a module
@@ -152,7 +152,7 @@
       }
   }
 
-  console.log('databnase改变了最终版444');
+  console.log('databnase改变了最终版8');
 
   return Database;
 
