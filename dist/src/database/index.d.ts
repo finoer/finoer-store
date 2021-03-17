@@ -8,7 +8,7 @@ interface DataType {
 declare class Database {
     namespace: string;
     data: DataType;
-    private existingProxy;
+    existingProxy: Array<string>;
     /**
      * Initialize the namespace of the currently activated project
      * @param { string } - name namespace
@@ -42,5 +42,11 @@ declare class Database {
      * @param { string } - namespace 命名空间
      */
     proxyOfcontent(namespace: string): ProxyConstructor;
+    /**
+     * set data into cache - 将数据设置到缓存中， 一个是global的命名空间，一个是当前的命名空间
+     * @param { string } - namespace 命名空间
+     */
+    synchronizeDataInCache(namespace: string): void;
+    setProxy(data: unknown): ProxyConstructor;
 }
 export default Database;

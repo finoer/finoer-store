@@ -16,7 +16,7 @@ class Database {
   public data: DataType = {};
 
   // Cache data key that has been set up proxy;
-  private existingProxy: Array<string> = [];
+  public existingProxy: Array<string> = [];
 
 
   /**
@@ -29,6 +29,24 @@ class Database {
     // 重置上一个命名空间的状态
     // this.reset()
     this.namespace = spacename
+
+
+    // 从缓存中恢复数据
+    if(!this.data[spacename]) {
+      const dataString = window.localStorage.getItem(`finoData_${spacename}`)
+
+      const data = dataString && JSON.parse(dataString);
+
+      this.set(data, spacename)
+    }
+
+    if(!this.data.global) {
+      const dataString = window.localStorage.getItem(`finoData_global`)
+
+      const data = dataString && JSON.parse(dataString);
+
+      this.set({ ...data }, 'global')
+    }
   }
 
   /**
@@ -63,7 +81,11 @@ class Database {
     }
 
     // 代理内容
-    this.data[currentSpace] = this.proxyOfcontent(currentSpace)
+    this.data[currentSpace] = this.proxyOfcontent(currentSpace);
+
+    this.synchronizeDataInCache(currentSpace)
+
+
   }
 
   /**
@@ -112,8 +134,6 @@ class Database {
   proxyOfprototype(data: DataType, namespace: string, key: string) {
     if(key === '_spacename') { return }
 
-    console.log(data)
-
     const _namespace = namespace || this.namespace;
 
     const sharePropertyDefinition = {
@@ -143,7 +163,34 @@ class Database {
       return this.data[namespace]
     }
 
-    let proxy =  new Proxy(this.data[namespace], {
+    let proxy =  this.setProxy(this.data[namespace])
+
+    this.synchronizeDataInCache(namespace)
+
+
+    this.existingProxy.push(namespace)
+
+    return proxy
+  }
+
+  /**
+   * set data into cache - 将数据设置到缓存中， 一个是global的命名空间，一个是当前的命名空间
+   * @param { string } - namespace 命名空间
+   */
+  synchronizeDataInCache(namespace: string) {
+    const spaceData = this.data[namespace];
+
+    const globalData = this.data.global;
+
+    window.localStorage.setItem(`finoData_${namespace}`, JSON.stringify(spaceData))
+    window.localStorage.setItem(`finoData_global`, JSON.stringify(globalData));
+
+    // todo 后面会替换成npm包， 临时方案， 调用w
+    (window as any).$event && (window as any).$event.notify('dataChange')
+  }
+
+  setProxy(data: unknown) {
+    let proxy: ProxyConstructor = new Proxy(data, {
       get: (target: any, key: string | number | symbol, receiver: any) => {
 
         const res = Reflect.get(target, key, receiver);
@@ -158,16 +205,13 @@ class Database {
         }
         const result = Reflect.set(target, key, value, receiver);
 
+
         return result
       }
     })
 
-    this.existingProxy.push(namespace)
-
     return proxy
   }
-
-
 }
 
 

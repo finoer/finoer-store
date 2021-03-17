@@ -36,6 +36,17 @@
           // 重置上一个命名空间的状态
           // this.reset()
           this.namespace = spacename;
+          // 从缓存中恢复数据
+          if (!this.data[spacename]) {
+              const dataString = window.localStorage.getItem(`finoData_${spacename}`);
+              const data = dataString && JSON.parse(dataString);
+              this.set(data, spacename);
+          }
+          if (!this.data.global) {
+              const dataString = window.localStorage.getItem(`finoData_global`);
+              const data = dataString && JSON.parse(dataString);
+              this.set({ ...data }, 'global');
+          }
       }
       /**
        * set up reactive data
@@ -63,6 +74,7 @@
           }
           // 代理内容
           this.data[currentSpace] = this.proxyOfcontent(currentSpace);
+          this.synchronizeDataInCache(currentSpace);
       }
       /**
        * Get the data of a module
@@ -109,7 +121,6 @@
           if (key === '_spacename') {
               return;
           }
-          console.log(data);
           const _namespace = namespace || this.namespace;
           const sharePropertyDefinition = {
               get: () => {
@@ -132,7 +143,25 @@
           if (this.existingProxy.includes(namespace)) {
               return this.data[namespace];
           }
-          let proxy = new Proxy(this.data[namespace], {
+          let proxy = this.setProxy(this.data[namespace]);
+          this.synchronizeDataInCache(namespace);
+          this.existingProxy.push(namespace);
+          return proxy;
+      }
+      /**
+       * set data into cache - 将数据设置到缓存中， 一个是global的命名空间，一个是当前的命名空间
+       * @param { string } - namespace 命名空间
+       */
+      synchronizeDataInCache(namespace) {
+          const spaceData = this.data[namespace];
+          const globalData = this.data.global;
+          window.localStorage.setItem(`finoData_${namespace}`, JSON.stringify(spaceData));
+          window.localStorage.setItem(`finoData_global`, JSON.stringify(globalData));
+          // todo 后面会替换成npm包， 临时方案， 调用w
+          window.$event && window.$event.notify('dataChange');
+      }
+      setProxy(data) {
+          let proxy = new Proxy(data, {
               get: (target, key, receiver) => {
                   const res = Reflect.get(target, key, receiver);
                   return res;
@@ -147,12 +176,11 @@
                   return result;
               }
           });
-          this.existingProxy.push(namespace);
           return proxy;
       }
   }
 
-  console.log('databnase改变了最终版8');
+  console.log('databnase改变了最终版9');
 
   return Database;
 
