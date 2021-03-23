@@ -34,7 +34,6 @@
               throw new Error('请传入命名空间');
           }
           // 重置上一个命名空间的状态
-          // this.reset()
           this.namespace = spacename;
           // 从缓存中恢复数据
           if (!this.data[spacename]) {
@@ -47,6 +46,7 @@
               const data = dataString && JSON.parse(dataString);
               this.set({ ...data }, 'global');
           }
+          this.set(this.data[this.namespace], this.namespace);
       }
       /**
        * set up reactive data

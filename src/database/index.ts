@@ -18,7 +18,6 @@ class Database {
   // Cache data key that has been set up proxy;
   public existingProxy: Array<string> = [];
 
-
   /**
    * Initialize the namespace of the currently activated project
    * @param { string } - name namespace
@@ -27,9 +26,7 @@ class Database {
     if(!spacename) { throw new Error('请传入命名空间'); return }
 
     // 重置上一个命名空间的状态
-    // this.reset()
     this.namespace = spacename
-
 
     // 从缓存中恢复数据
     if(!this.data[spacename]) {
@@ -47,6 +44,8 @@ class Database {
 
       this.set({ ...data }, 'global')
     }
+
+    this.set(this.data[this.namespace], this.namespace)
   }
 
   /**
@@ -84,8 +83,6 @@ class Database {
     this.data[currentSpace] = this.proxyOfcontent(currentSpace);
 
     this.synchronizeDataInCache(currentSpace)
-
-
   }
 
   /**
