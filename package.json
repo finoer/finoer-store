@@ -1,6 +1,6 @@
 {
   "name": "@finoer/finoer-store",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "",
   "author": "",
   "keywords": [],
@@ -16,7 +16,7 @@
   "main": "dist/src/index.js",
   "module": "dist/fino-database.es.js",
   "cjsmodule": "dist/fino-database.cjs.js",
-  "typings": "dist/src/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist",
     "src"
